@@ -1,25 +1,36 @@
+// App.test.jsx
+
 import { describe, it, expect } from "vitest";
-
 import { render, screen } from "@testing-library/react";
-
+import userEvent from "@testing-library/user-event";
 import App from "./App";
 
-describe("something truthy and falsy", () => {
-  it("true to be true", () => {
-    expect(true).toBe(true);
+describe("App component", () => {
+  it("renders magnificent monkeys", () => {
+    // since screen does not have the container property, we'll destructure render to obtain a container for this test
+    const { container } = render(<App />);
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <button
+          type="button"
+        >
+          Click Me
+        </button>
+        <h1>
+          Magnificent Monkeys
+        </h1>
+      </div>
+    `);
   });
 
-  it("false to be false", () => {
-    expect(false).toBe(false);
-  });
-});
+  it("renders radical rhinos after button click", async () => {
+    const user = userEvent.setup();
 
-describe("App", () => {
-  it("renders headline", () => {
-    render(<App title="React" />);
+    render(<App />);
+    const button = screen.getByRole("button", { name: "Click Me" });
 
-    screen.debug();
+    await user.click(button);
 
-    // check if App components renders headline
+    expect(screen.getByRole("heading").textContent).toMatch(/radical rhinos/i);
   });
 });
